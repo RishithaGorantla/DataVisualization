@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+	    <title>Data Visualization</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      
+         <script src="http://d3js.org/d3.v3.min.js"></script>
+		<link rel="stylesheet" href="CSS/mycss.css" type="text/css">
+    
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.8/d3.min.js" type="text/JavaScript"></script>
+    </head>
+    <body>
+        <div id="wrapper">
+             <header>
+                <h1>Data Visualization Individual Project </h1>
+            </header>
+        
+             <nav>
+               
+                <div id="n1"> <a href="Barchart.html">Bar Chart</a>&nbsp;</div>
+                <div id="n2"><a href="map.html">Map</a></div>
+                <div id="n3"><a href="scatterplot.html">Scatter Plot</a></div>
+                <div id="n4"><a href="pie.html">Pie chart</a></div>
+		   </nav>
+           <b>VIRAT KOHLI's YEAR WISE RUNS IN ODI's SINCE HIS DEBUT</b>
+                <main>
+         <svg style="width:600px;height:600px;">
+         </svg>
+    
+    
+    <script>
+       d3.csv("Data/scatterPlot.csv", (error, data) => {
+            if(error) {
+                console.log("Error", error);
+            } else {
+                scatterplot(data);
+                
+            }
+        });
+        
+        function scatterplot(data){
+            var xScale = d3.scaleLinear().domain([2008,2020]).range([25,525]);
+            var yScale = d3.scaleLinear().domain([0,1500]).range([525,25]);
+            
+            var yAxis = d3.axisRight()
+                          .scale(yScale)
+                          .ticks(20)
+                          .tickSize(-500);
+            
+            d3.select("svg")
+              .append("g")
+              .attr("id","yAxisG")
+              .attr("transform","translate(525,0)")
+              .call(yAxis);
+            
+            var xAxis = d3.axisBottom()
+                 .scale(xScale)
+                 .tickSize(-500)
+                 .tickValues([2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020]);
+            
+            d3.select("svg")
+              .append("g")
+              .attr("id","xAxisG")
+              .attr("transform","translate(0,525)")
+              .call(xAxis);
+            
+            d3.select("svg").selectAll("circle")
+                 .data(data)
+                 .enter()
+                 .append("circle")
+                 .attr("r",5)
+                 .attr("cx", d => xScale(d.year))
+                 .attr("cy", d => yScale(d.runs))
+                 .style("fill","#319331")
+                 .on("click", circleClick)
+                 .html(d => d);
+            
+            function circleClick(datapoint) {
+                var maxValue = d3.max(data, d => parseFloat(d[datapoint]));
+                var radiusScale = d3.scaleLinear().domain([0,10000]).range([5,50]);
+                
+                d3.selectAll("circle")
+                    .transition()
+                    .duration(500)
+                    .attr("r",5);
+                
+                d3.select(this)
+                    .transition()
+                    .duration(500)
+                    .attr("r", d=> radiusScale(parseFloat(datapoint.runs)));
+            }
+        }
+        
+        
+       
+        
+    </script>
+            </main>
+            <footer>
+                 Individual Project<br>
+               
+            </footer>
+        </div>
+    </body>    
+</html>

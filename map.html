@@ -1,0 +1,181 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.8/d3.min.js" type="text/javascript">
+        </script>
+        <script src="https://d3js.org/d3-geo-projection.v1.min.js"></script>
+        <link rel="stylesheet" href="CSS/mycss.css" type="text/css">
+        
+    </head>
+    
+    <body>
+         <div id="wrapper">
+            
+
+
+            <header>
+
+              
+                <h1>Data Visualization Individual Project</h1>
+            </header>
+        
+            <nav>
+                
+                <div id="n1"> <a href="Barchart.html">Bar Chart</a>&nbsp;</div>
+                <div id="n2"><a href="map.html">Map</a></div>
+                <div id="n3"><a href="scatterplot.html">Scatter Plot</a></div>
+                <div id="n4"><a href="pie.html">Pie chart</a></div>
+       </nav>
+                           <h3>Some Great Cricketer's Birth Nations</h3>
+        <div id="controls">
+        </div>
+        
+        <div id="viz">
+            <svg style="width: 1000px;height: 600px"></svg>
+        </div>
+        
+        <button class="vkplace" onclick="vkplace()"> V Kohli's </button>
+        <button class="smithplace" onclick="smithplace()"> S Smith's</button>
+        <button name="abdplace" onclick="abdplace()"> ABD's </button>
+        <button name="cookplace" onclick="cookplace()"> A cook's </button>
+        <button name="kaneplace" onclick="kaneplace()"> Kane williamson's </button>
+             <br>
+             <br>
+             <br>
+        
+        <script>
+            let vkPlace = [];
+            let smith = [];
+            let abd = [];
+            let cook=[];
+            let kane=[];
+            
+            var PromiseWrapper = (xhr, d) => new Promise(resolve => xhr(d, (p) => resolve(p)));
+            
+
+
+            Promise
+              .all([
+                PromiseWrapper(d3.json, "Data/world.geojson"),
+                PromiseWrapper(d3.csv, "Data/map.csv")
+            ])
+            .then(resolve => {
+                createMap(resolve[0], resolve[1]);
+            });
+            
+            function createMap(countries, worldCup) {
+                worldCup.forEach(data =>{
+                    vkPlace.push(data.vkplace);
+                    abd.push(data.abdplace);
+                    smith.push(data.smithplace);
+                    cook.push(data.cookplace);
+                    kane.push(data.kaneplace);
+                    
+                });
+                
+                console.log(abd,smith,vkPlace,cook,kane);
+                
+                var aprojection = d3.geoMercator()
+                  .scale(120)
+                  .translate([250,250])
+                  .center([20,0]);
+
+
+                
+                var geoPath = d3.geoPath().projection(aprojection);
+                
+                d3.select("svg")
+                .selectAll("path")
+                .data(countries.features)
+                .enter()
+                .append("path")
+                  .attr("d",geoPath)
+                  .attr("class", "country")
+                  .style("fill", "#000000");
+                
+            }
+
+
+
+            
+              function setToBlack() {
+                  d3.select("svg")
+                  .selectAll("path.country")
+                  .style("fill", "#000000");
+              }
+
+
+
+
+            
+            function vkplace() {
+                
+                setToBlack();
+                d3.select("svg")
+                  .selectAll("path.country")
+                   .filter (function(p,q) {
+                    console.log(p,q);
+                    return  vkPlace.indexOf(p.properties.name) > -1})
+                   .style("fill", "#6a097d");
+                            }
+            
+
+
+           function smithplace() {
+               setToBlack();
+               d3.select("svg")
+                 .selectAll("path.country")
+                  .filter (function(p,q) {
+                     console.log(p,q);
+                     return smith.indexOf(p.properties.name) > -1})
+                 .style("fill", "#fecd1a");
+               }
+
+
+
+           function abdplace() {
+               setToBlack();
+               d3.select("svg")
+                 .selectAll("path.country")
+                   .filter (function(p,q) {
+                     console.log(p,q);
+                     return abd.indexOf(p.properties.name) > -1})
+                 .style("fill", "#ffabe1");
+           }
+           function cookplace() {
+                
+
+
+                setToBlack();
+                d3.select("svg")
+                  .selectAll("path.country")
+                   .filter (function(p,q) {
+                    console.log(p,q);
+                    return  cook.indexOf(p.properties.name) > -1})
+                   .style("fill", "#ff4646");
+                            }
+            function kaneplace() {
+                
+
+
+                setToBlack();
+                d3.select("svg")
+                  .selectAll("path.country")
+                   .filter (function(p,q) {
+                    console.log(p,q);
+                    return  kane.indexOf(p.properties.name) > -1})
+                   .style("fill", "#951555");
+                            }
+            
+            
+        </script>
+             <footer>
+
+
+               Individual Project<br>
+               
+            </footer>
+        </div>
+        
+    </body>
+</html>
